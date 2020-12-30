@@ -107,7 +107,7 @@ PC_2 = [14, 17, 11, 24, 1, 5, 3, 28,
         34, 53, 46, 42, 50, 36, 29, 32]
 
 
-# In[2]:
+#%% get and convert to binary plaintext and key
 
 
 plainText = "CalmDown" #input(str("Plaintext giriniz: "))
@@ -121,18 +121,15 @@ keytoBin = ''.join(format(ord(i), 'b').zfill(8) for i in key)
 #print(keytoBin)
 
 
-# In[ ]:
+#%% adjust to initial permute
 
-def apply_initial_p(P_TABLE, PLAINTEXT):
+def initial_P(i_p, bin_ptext):
     permuted_ptext = ""
-    for index in P_TABLE:
-        permuted_ptext += PLAINTEXT[int(index)-1]
+    for index in i_p:
+        permuted_ptext += bin_ptext[int(index)-1]
     return permuted_ptext
 
-print (pTexttoBin)
-print (apply_initial_p(IP, pTexttoBin))
-
-
-
+#if you want to check print (pTexttoBin)
+#if you want to check print (initial_P(IP, pTexttoBin))
 
 # %%
