@@ -129,7 +129,7 @@ def initial_P(i_p, bin_ptext):
         permuted_ptext += bin_ptext[int(index)-1]
     return permuted_ptext
 
-#if you want to check print (pTexttoBin)
+#if you want to check print (pTexttoBin)gf
 #if you want to check print (initial_P(IP, pTexttoBin))
 
 # %%
