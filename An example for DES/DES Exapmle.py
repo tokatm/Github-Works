@@ -121,15 +121,38 @@ keytoBin = ''.join(format(ord(i), 'b').zfill(8) for i in key)
 #print(keytoBin)
 
 
-#%% adjust to initial permute
+#%% required functions
 
-def initial_P(i_p, bin_ptext):
-    permuted_ptext = ""
-    for index in i_p:
-        permuted_ptext += bin_ptext[int(index)-1]
-    return permuted_ptext
+#permutation function
+def permute(i_p, bin_ptext, n):
+    permutation = ""
+    for index in range(0, n):
+        permutation = permutation + i_p[bin_ptext[i]-1]
+    return permutation
 
-#if you want to check print (pTexttoBin)gf
-#if you want to check print (initial_P(IP, pTexttoBin))
+# for shift left
+def shift_left(k, nthShift):
+    s = ""
+    for i in range(nthShift):
+        for j in range(1,len(k)):
+            s = s + k[j]
+        s = s + k[0]
+        k = s
+        s = ""
+    return k
 
-# %%
+#for XOR
+def xor(a,b):
+    rep = ""
+    for i in range(len(a)):
+        if a[i] == b[i]:
+            rep = rep + "0"
+        else:
+            rep = rep + "1"
+    return rep
+# %% Operaions
+
+# initial permutattion
+
+def encrypt(pTexttoBin, roundkey):
+    
