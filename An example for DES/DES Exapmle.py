@@ -106,29 +106,24 @@ PC_2 = [14, 17, 11, 24, 1, 5, 3, 28,
         51, 45, 33, 48, 44, 49, 39, 56,
         34, 53, 46, 42, 50, 36, 29, 32]
 
+SHIFT_TABLE = [1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1]
 
 #%% get and convert to binary plaintext and key
-
-
 plainText = "CalmDown" #input(str("Plaintext giriniz: "))
 key = "CryptoEn" #input(str("Anahtar giriniz: "))
 
 pTexttoBin = ''.join(format(ord(i), 'b').zfill(8) for i in plainText)
 keytoBin = ''.join(format(ord(i), 'b').zfill(8) for i in key)
 
-
-#print(pTexttoBin)
-#print(keytoBin)
-
-
 #%% required functions
 
 #permutation function
-def permute(i_p, bin_ptext, n):
+def permute(bin_ptext ,i_p, n):
     permutation = ""
     for index in range(0, n):
-        permutation = permutation + i_p[bin_ptext[i]-1]
+        permutation = permutation + bin_ptext[i_p[index] - 1]
     return permutation
+print("permuteer",permute(pTexttoBin, IP, 64))
 
 # for shift left
 def shift_left(k, nthShift):
@@ -150,9 +145,101 @@ def xor(a,b):
         else:
             rep = rep + "1"
     return rep
+
+#for sbox 
+def bin2dec(binary):
+    binary1 = binary
+    decimal, i , n = 0,0,0
+    while(binary != 0):
+        dec = binary % 10
+        decimal = decimal + dec * pow(2, i)
+        binary = binary//10
+        i += 1
+    return decimal
+
+def dec2bin(num):  
+    res = bin(num).replace("0b", "") 
+    if(len(res)%4 != 0): 
+        div = len(res) / 4
+        div = int(div) 
+        counter =(4 * (div + 1)) - len(res)  
+        for i in range(0, counter): 
+            res = '0' + res 
+    return res 
+
 # %% Operaions
 
 # initial permutattion
 
 def encrypt(pTexttoBin, roundkey):
     
+    permuted_pt = permute(pTexttoBin,  IP, 64)
+    #print(permuted_pt)
+
+
+    #splitting
+    left = permuted_pt[0:32]
+    right = permuted_pt[32:64]
+
+    # for each round
+    for i in range(0,16):
+
+         #f functions
+        # expansion step
+        expStep = permute(right, EXP_E, 48)
+
+        #xor step
+        xorStep = xor(expStep, roundkey[i])
+
+        #sbox step
+        sbox = ""
+        for j in range(0,8):
+            row = bin2dec(int(xorStep[j * 6] + xorStep[j * 6 + 5]))
+            col = bin2dec(int(xorStep[j * 6 + 1]+ xorStep[j * 6 + 2] + xorStep[j * 6 + 3] + xorStep[j * 6 + 4]))
+            val = S_BOX[j][row][col]
+            sbox = sbox + dec2bin(val)
+        
+        #permutation step
+        sbox_p = permute(sbox, P, 32)
+
+        fResult = xor(left, sbox_p)
+        left = fResult
+        
+        #swap
+        if(i!=15):
+            left, right = right, left
+        #print("Round: ", i+1, left, right, " ", roundkey[i])
+
+    combine = left+right   
+
+    #final permutation
+    cipherText = permute(combine, FP, 64)
+    return cipherText
+    
+
+#key genereator
+keyPermuted = permute(keytoBin, PC_1, 56)
+
+#splitting keys
+left = keyPermuted[0:28]
+right = keyPermuted[28:56]
+
+roundkey = []
+
+for i in range(0,16):
+    left = shift_left(left, SHIFT_TABLE[i])
+    right = shift_left(right, SHIFT_TABLE[i])
+
+    combineKey = left + right
+
+    round_key = permute(combineKey, PC_2, 48)
+
+    roundkey.append(round_key)
+cipher_Text =encrypt(pTexttoBin, roundkey)
+print("plaintext",pTexttoBin)
+print("key",keytoBin)
+print("Ciphertext: ", cipher_Text)
+
+
+
+
