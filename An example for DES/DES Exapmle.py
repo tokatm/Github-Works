@@ -151,7 +151,6 @@ def permute(bin_ptext ,i_p, n):
     for index in range(0, n):
         permutation = permutation + bin_ptext[i_p[index] - 1]
     return permutation
-print("permuteer",permute(pTexttoBin, IP, 64))
 
 # for shift left
 def shift_left(k, nthShift):
@@ -265,8 +264,8 @@ for i in range(0,16):
     roundkey.append(round_key)
 cipher_Text = encrypt(pTexttoBin, roundkey)
 cipher_Text = bin2hex(cipher_Text)
-print("plaintext",pTexttoBin)
-print("key",keytoBin)
+print("plaintext",bin2hex(pTexttoBin))
+print("key",bin2hex(keytoBin))
 print("Ciphertext: ", cipher_Text)
 
 
