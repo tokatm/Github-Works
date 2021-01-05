@@ -236,7 +236,7 @@ def encrypt(pTexttoBin, roundkey):
         if(i!=15):
             left, right = right, left
         #print("Round: ", i+1, left, right, " ", roundkey[i])
-
+        print("Round ", i + 1, " ", bin2hex(left), " ", bin2hex(right), " ", bin2hex(roundkey[i]))
     combine = left+right   
 
     #final permutation
@@ -262,12 +262,13 @@ for i in range(0,16):
     round_key = permute(combineKey, PC_2, 48)
 
     roundkey.append(round_key)
+    
+
 cipher_Text = encrypt(pTexttoBin, roundkey)
+
 cipher_Text = bin2hex(cipher_Text)
-print("plaintext",bin2hex(pTexttoBin))
-print("key",bin2hex(keytoBin))
+print("Plaintext : ",bin2hex(pTexttoBin))
+print("Key       : ",bin2hex(keytoBin))
 print("Ciphertext: ", cipher_Text)
 
-
-
-
+#
